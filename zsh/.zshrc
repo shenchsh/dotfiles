@@ -79,13 +79,16 @@ antigen bundle dnf
 # extract <filename>
 antigen bundle extract
 antigen bundle fasd
-antigen bundle fzf
 antigen bundle git
 antigen bundle mercurial
 antigen bundle ripgrep
 antigen bundle rust
 antigen bundle systemd
 antigen bundle tmux
+antigen bundle vi-mode
+
+# vi-mode plugin conflicts with fzf, run fzf after vi-mode
+antigen bundle fzf
 
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-syntax-highlighting
@@ -100,9 +103,6 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 ################################
 # Customization
 ################################
-# vi-mode plugin conflicts with fzf, use raw binding intead
-bindkey -v
-
 HISTSIZE=1000000
 SAVEHIST=500000
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
