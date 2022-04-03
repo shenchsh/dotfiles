@@ -1,3 +1,4 @@
 .vim_tmp/*.swp
 zsh/.zsh_history
 zsh/.zshrc.zwc
+zsh/.zcompdump
