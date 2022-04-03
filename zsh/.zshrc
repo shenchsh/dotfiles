@@ -5,15 +5,15 @@
 #   Always sourced. Define $PATH, $EDITOR, $PAGER, $ZDOTDIR etc
 #
 # /etc/zprofile
-# ${ZDOTDIR:-$HOME}/.zprofile (for login shell)
+# ${ZDOTDIR:-$HOME}/.zprofile
 #
 # /etc/zshrc
 # ${ZDOTDIR:-$HOME}/.zshrc (for interactive shell)
 #
 # /etc/zlogin
-# ${ZDOTDIR:-$HOME}/.zlogin (for login shell)
+# ${ZDOTDIR:-$HOME}/.zlogin
 #
-# ${ZDOTDIR:-$HOME}/.zlogout (for login shell)
+# ${ZDOTDIR:-$HOME}/.zlogout
 # /etc/zlogout
 
 
@@ -62,35 +62,6 @@ fi
 ################################
 # Plugins
 ################################
-function _diff_hg() {
-    if [[ -z $1 ]]; then
-        hg diff -r '.^'
-    else
-        x=$(hg book | grep -e "$1 ")
-        hg diff -c ${x: -12}
-    fi
-}
-
-function mkcd() {
-    mkdir -p "$1" && cd "$1"
-}
-
-function upload() {
-    rsync -azvhP $2 root@"$1":/tmp/$(basename "$2")
-}
-
-function download() {
-    rsync -azvhP root@"$1":"$2" /tmp/$(basename "$2")
-}
-
-alias dbg=_diff_hg
-alias hs='noglob hostselect'
-alias s=ssh
-alias odc='ondemand-admin canary'
-
-################################
-# Plugins
-################################
 source $ZDOTDIR/.antigen.zsh
 
 export FZF_BASE=~/dotfiles/zsh/fzf
@@ -123,9 +94,51 @@ antigen theme romkatv/powerlevel10k
 
 antigen apply
 
+[[ ! -f $ZDOTDIR/.p10k.zsh ]] || source $ZDOTDIR/.p10k.zsh
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+
+################################
+# Customization
+################################
 # vi-mode plugin conflicts with fzf, use raw binding intead
 bindkey -v
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f $ZDOTDIR/.p10k.zsh ]] || source $ZDOTDIR/.p10k.zsh
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+HISTSIZE=1000000
+SAVEHIST=500000
+setopt BANG_HIST                 # Treat the '!' character specially during expansion.
+setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.
+setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
+setopt SHARE_HISTORY             # Share history between all sessions.
+setopt HIST_EXPIRE_DUPS_FIRST    # Expire duplicate entries first when trimming history.
+setopt HIST_IGNORE_DUPS          # Don't record an entry that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS      # Delete old recorded entry if new entry is a duplicate.
+setopt HIST_FIND_NO_DUPS         # Do not display a line previously found.
+setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history file.
+setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
+setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
+
+function _diff_hg() {
+    if [[ -z $1 ]]; then
+        hg diff -r '.^'
+    else
+        x=$(hg book | grep -e "$1 ")
+        hg diff -c ${x: -12}
+    fi
+}
+
+function mkcd() {
+    mkdir -p "$1" && cd "$1"
+}
+
+function upload() {
+    rsync -azvhP $2 root@"$1":/tmp/$(basename "$2")
+}
+
+function download() {
+    rsync -azvhP root@"$1":"$2" /tmp/$(basename "$2")
+}
+
+alias dbg=_diff_hg
+alias hs='noglob hostselect'
+alias s=ssh
+alias odc='ondemand-admin canary'
