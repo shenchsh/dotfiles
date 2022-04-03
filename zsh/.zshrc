@@ -62,7 +62,7 @@ fi
 ################################
 # Plugins
 ################################
-source $ZDOTDIR/.antigen.zsh
+source ${ZDOTDIR:-$HOME}/.antigen.zsh
 
 export FZF_BASE=~/dotfiles/zsh/fzf
 
@@ -94,7 +94,7 @@ antigen theme romkatv/powerlevel10k
 
 antigen apply
 
-[[ ! -f $ZDOTDIR/.p10k.zsh ]] || source $ZDOTDIR/.p10k.zsh
+[[ -s ${ZDOTDIR:-$HOME}/.p10k.zsh ]] && source ${ZDOTDIR:-$HOME}/.p10k.zsh
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
 ################################
