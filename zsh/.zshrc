@@ -27,14 +27,22 @@ fi
 ################################
 # Platform-dependent configs
 ################################
+path=(
+    $HOME/dotfiles/bin
+    $HOME/.cargo/bin
+    $path
+)
+
+[[ -s $HOME/.cargo/env ]] && source $HOME/.cargo/env
+
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     path=(
-        ~/dotfiles/bin/linux
+        $HOME/dotfiles/bin/linux
         $path
     )
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     path=(
-        ~/dotfiles/bin/macos
+        $HOME/dotfiles/bin/macos
         $HOME/homebrew/bin
         $HOME/homebrew/opt/riscv-gnu-toolchain/bin
         $HOME/homebrew/opt/gnu-sed/libexec/gnubin
@@ -64,7 +72,7 @@ fi
 ################################
 source ${ZDOTDIR:-$HOME}/.antigen.zsh
 
-export FZF_BASE=~/dotfiles/zsh/fzf
+export FZF_BASE=$HOME/dotfiles/zsh/fzf
 
 antigen use oh-my-zsh
 
