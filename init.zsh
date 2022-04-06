@@ -9,3 +9,6 @@ top_level_dotfiles=(
 for f in ${top_level_dotfiles[*]}; do
     ln -sf ~/dotfiles/"$f" ~/"$f"
 done
+
+mkdir -p ~/.config/nvim
+ln -sf ~/dotfiles/init.vim ~/.config/nvim/init.vim
