@@ -151,7 +151,7 @@ function download() {
     rsync -azvhP root@"$1":"$2" /tmp/$(basename "$2")
 }
 
-alias dbg=_diff_hg
+alias dhg=_diff_hg
 alias hs='noglob hostselect'
 alias s=ssh
 alias odc='ondemand-admin canary'
