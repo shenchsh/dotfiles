@@ -72,8 +72,6 @@ fi
 ################################
 source ${ZDOTDIR:-$HOME}/.antigen.zsh
 
-export FZF_BASE=$HOME/dotfiles/zsh/fzf
-
 antigen use oh-my-zsh
 
 # acs, or acs <keyword>
@@ -93,10 +91,7 @@ antigen bundle ripgrep
 antigen bundle rust
 antigen bundle systemd
 antigen bundle tmux
-antigen bundle vi-mode
-
-# vi-mode plugin conflicts with fzf, run fzf after vi-mode
-antigen bundle fzf
+antigen bundle jeffreytse/zsh-vi-mode
 
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-syntax-highlighting
@@ -107,6 +102,16 @@ antigen apply
 
 [[ -s ${ZDOTDIR:-$HOME}/.p10k.zsh ]] && source ${ZDOTDIR:-$HOME}/.p10k.zsh
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+
+export FZF_BASE=$HOME/dotfiles/zsh/.fzf
+[[ -s ${FZF_BASE}/completion.zsh ]] && source ${FZF_BASE}/completion.zsh
+
+# Prevent overwriting fzf key-bindings
+function init_fzf_key_bindings() {
+    [[ -s ${FZF_BASE}/key-bindings.zsh ]] && source ${FZF_BASE}/key-bindings.zsh
+}
+zvm_after_init_commands+=(init_fzf_key_bindings)
+
 
 ################################
 # Customization
@@ -150,3 +155,4 @@ alias dbg=_diff_hg
 alias hs='noglob hostselect'
 alias s=ssh
 alias odc='ondemand-admin canary'
+alias vim=nvim
