@@ -12,3 +12,5 @@ done
 
 mkdir -p ~/.config/nvim
 ln -sf ~/dotfiles/init.vim ~/.config/nvim/init.vim
+
+cp -r ~/dotfiles/.vim ~/.vim
