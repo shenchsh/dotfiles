@@ -93,7 +93,7 @@ antigen bundle tmux
 antigen bundle jeffreytse/zsh-vi-mode
 
 antigen bundle zsh-users/zsh-autosuggestions
-antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zdharma-continuum/fast-syntax-highlighting
 
 antigen theme romkatv/powerlevel10k
 
