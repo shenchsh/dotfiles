@@ -88,7 +88,6 @@ antigen bundle fasd
 antigen bundle git
 antigen bundle mercurial
 antigen bundle ripgrep
-antigen bundle rust
 antigen bundle systemd
 antigen bundle tmux
 antigen bundle jeffreytse/zsh-vi-mode
