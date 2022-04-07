@@ -70,7 +70,7 @@ fi
 ################################
 # Plugins
 ################################
-source ${ZDOTDIR:-$HOME}/.antigen.zsh
+source ${ZDOTDIR:-$HOME}/antigen.zsh
 
 antigen use oh-my-zsh
 
