@@ -1,7 +1,7 @@
 " vim-plug: https://github.com/junegunn/vim-plug
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-let mapleader=","
+let mapleader="\<Space>"
 
 if (has("termguicolors"))
     set termguicolors
@@ -45,6 +45,19 @@ Plug 'saadparwaiz1/cmp_luasnip'
 " Snippets plugin
 Plug 'L3MON4D3/LuaSnip'
 
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'folke/trouble.nvim'
+" {{{
+nnoremap <leader>xx <cmd>TroubleToggle<cr>
+nnoremap <leader>xw <cmd>TroubleToggle workspace_diagnostics<cr>
+nnoremap <leader>xd <cmd>TroubleToggle document_diagnostics<cr>
+nnoremap <leader>xq <cmd>TroubleToggle quickfix<cr>
+nnoremap <leader>xl <cmd>TroubleToggle loclist<cr>
+nnoremap gR <cmd>TroubleToggle lsp_references<cr>
+" }}}
+
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'tmsvg/pear-tree'
 Plug 'scrooloose/nerdtree'
 " {{{
 let g:NERDTreeMinimalUI = 1
@@ -105,6 +118,8 @@ call plug#end()
 
 
 lua <<EOF
+require("trouble").setup {}
+
 local opts = { noremap=true, silent=true }
 vim.api.nvim_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
 vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
