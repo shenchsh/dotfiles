@@ -57,6 +57,22 @@ nnoremap gR <cmd>TroubleToggle lsp_references<cr>
 " }}}
 
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'easymotion/vim-easymotion'
+" {{{
+" Disable default mappings
+let g:EasyMotion_do_mapping = 0
+
+nmap s <Plug>(easymotion-overwin-f)
+nmap s <Plug>(easymotion-overwin-f2)
+
+" Turn on case-insensitive feature
+let g:EasyMotion_smartcase = 1
+
+" JK motions: Line motions
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+" }}}
+
 Plug 'tmsvg/pear-tree'
 Plug 'scrooloose/nerdtree'
 " {{{
