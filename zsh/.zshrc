@@ -115,6 +115,7 @@ zvm_after_init_commands+=(init_fzf_key_bindings)
 ################################
 # Customization
 ################################
+HISTFILE=$HOME/.zsh_history
 HISTSIZE=1000000
 SAVEHIST=500000
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
