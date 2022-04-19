@@ -54,19 +54,6 @@ else
     exit 1
 fi
 
-HOSTNAME=$(hostname)
-if [[ "$HOSTNAME" =~ "devvm" || "$HOSTNAME" =~ "devbig" ]]; then
-    is_dev=1
-elif [[ "$HOSTNAME" =~ "od" ]]; then
-    is_od=1
-fi
-
-if [[ $is_dev || $is_od ]]; then
-    [[ -z "$LOCAL_ADMIN_SCRIPTS" ]] && export LOCAL_ADMIN_SCRIPTS='/usr/facebook/ops/rc'
-    source "${LOCAL_ADMIN_SCRIPTS}/master.zshrc"
-    source "${LOCAL_ADMIN_SCRIPTS}/scm-prompt"
-fi
-
 ################################
 # Plugins
 ################################
@@ -130,29 +117,11 @@ setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history 
 setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
 setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
 
-function _diff_hg() {
-    if [[ -z $1 ]]; then
-        hg diff -r '.^'
-    else
-        x=$(hg book | grep -e "$1 ")
-        hg diff -c ${x: -12}
-    fi
-}
-
 function mkcd() {
     mkdir -p "$1" && cd "$1"
 }
 
-function upload() {
-    rsync -azvhP $2 root@"$1":/tmp/$(basename "$2")
-}
-
-function download() {
-    rsync -azvhP root@"$1":"$2" /tmp/$(basename "$2")
-}
-
-alias dhg=_diff_hg
-alias hs='noglob hostselect'
 alias s=ssh
-alias odc='ondemand-admin canary'
 alias vim=nvim
+
+[[ -s $HOME/dotfiles/zsh/.zsensitive ]] && source $HOME/dotfiles/zsh/.zsensitive
