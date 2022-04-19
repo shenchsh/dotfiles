@@ -96,6 +96,7 @@ function! NERDTreeToggleAndFind()
 endfunction
 " }}}
 
+"CTRL-T(tab), CTRL-X(split), CTRL-V(vsplit)
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 " {{{
