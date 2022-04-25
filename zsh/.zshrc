@@ -21,37 +21,38 @@
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 ################################
 # Platform-dependent configs
 ################################
 path=(
-    $HOME/dotfiles/bin
-    $HOME/.cargo/bin
-    $path
+  $HOME/bin
+  $HOME/dotfiles/bin
+  $HOME/.cargo/bin
+  $path
 )
 
 [[ -s $HOME/.cargo/env ]] && source $HOME/.cargo/env
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    path=(
-        $HOME/dotfiles/bin/linux
-        $path
-    )
+  path=(
+    $HOME/dotfiles/bin/linux
+    $path
+  )
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    path=(
-        $HOME/dotfiles/bin/macos
-        $HOME/homebrew/bin
-        $HOME/homebrew/opt/riscv-gnu-toolchain/bin
-        $HOME/homebrew/opt/gnu-sed/libexec/gnubin
-        $HOME/homebrew/opt/qemu/bin
-        $path
-    )
+  path=(
+    $HOME/dotfiles/bin/macos
+    $HOME/homebrew/bin
+    $HOME/homebrew/opt/riscv-gnu-toolchain/bin
+    $HOME/homebrew/opt/gnu-sed/libexec/gnubin
+    $HOME/homebrew/opt/qemu/bin
+    $path
+  )
 else
-    echo "Unsupported operating system"
-    exit 1
+  echo "Unsupported operating system"
+  exit 1
 fi
 
 ################################
@@ -94,7 +95,7 @@ export FZF_BASE=$HOME/dotfiles/zsh/.fzf
 
 # Prevent overwriting fzf key-bindings
 function init_fzf_key_bindings() {
-    [[ -s ${FZF_BASE}/key-bindings.zsh ]] && source ${FZF_BASE}/key-bindings.zsh
+  [[ -s ${FZF_BASE}/key-bindings.zsh ]] && source ${FZF_BASE}/key-bindings.zsh
 }
 zvm_after_init_commands+=(init_fzf_key_bindings)
 
@@ -118,7 +119,7 @@ setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording en
 setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
 
 function mkcd() {
-    mkdir -p "$1" && cd "$1"
+  mkdir -p "$1" && cd "$1"
 }
 
 alias s=ssh
