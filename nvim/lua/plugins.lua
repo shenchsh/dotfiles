@@ -157,7 +157,29 @@ return require('packer').startup(function(use)
     end,
   })
 
-  use("neovim/nvim-lspconfig")
+  use({
+    "neovim/nvim-lspconfig",
+    requires = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local nvim_lsp = require'lspconfig'
+      nvim_lsp.rust_analyzer.setup({
+        settings = {
+          ["rust-analyzer"] = {
+            assist = {
+              importGranularity = "module",
+              importPrefix = "self",
+            },
+            cargo = {
+              loadOutDirsFromCheck = true
+            },
+            procMacro = {
+              enable = true
+            },
+          }
+        }
+      })
+    end,
+  })
   use({
     "nvim-treesitter/nvim-treesitter",
     config = function()

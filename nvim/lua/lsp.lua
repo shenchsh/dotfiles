@@ -100,13 +100,14 @@ local on_attach = function(client, bufnr)
 end
 M.on_attach = on_attach
 
+vim.api.nvim_exec([[autocmd BufWritePre *.rs lua vim.lsp.buf.formatting_sync(nil, 1000)]], fasle)
+
 -- null-ls configs
 local null_ls = require("null-ls")
 null_ls.setup({
   on_attach = on_attach,
   sources = {
-    null_ls.builtins.formatting.trim_whitespace,
-    null_ls.builtins.formatting.trim_newlines,
+    null_ls.builtins.formatting.stylua,
   },
 })
 
