@@ -77,7 +77,6 @@ antigen bundle git
 antigen bundle mercurial
 antigen bundle ripgrep
 antigen bundle systemd
-antigen bundle tmux
 antigen bundle jeffreytse/zsh-vi-mode
 
 antigen bundle zsh-users/zsh-autosuggestions

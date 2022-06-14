@@ -1,0 +1,6 @@
+[Service]
+ExecStart=/home/chs/dotfiles/remap/xremap /home/chs/dotfiles/remap/xremap.config
+Restart=always
+
+[Install]
+WantedBy=gdm.service
