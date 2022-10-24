@@ -64,7 +64,6 @@ antigen use oh-my-zsh
 
 # acs, or acs <keyword>
 antigen bundle aliases
-antigen bundle brew
 antigen bundle colored-man-pages
 antigen bundle command-not-found
 # .envrc, direnv allow . 
