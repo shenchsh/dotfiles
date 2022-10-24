@@ -10,8 +10,6 @@ for f in ${top_level_dotfiles[*]}; do
 done
 
 nvim_config=(
-  "local.lua"
-  "lsp.lua"
   "mappings.lua"
   "options.lua"
   "plugins.lua"
