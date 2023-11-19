@@ -48,6 +48,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     $HOME/homebrew/opt/riscv-gnu-toolchain/bin
     $HOME/homebrew/opt/gnu-sed/libexec/gnubin
     $HOME/homebrew/opt/qemu/bin
+    /opt/homebrew/bin
     $path
   )
 else
@@ -124,3 +125,6 @@ alias s=ssh
 alias vim=nvim
 
 [[ -s $HOME/dotfiles/zsh/.zsensitive ]] && source $HOME/dotfiles/zsh/.zsensitive
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
