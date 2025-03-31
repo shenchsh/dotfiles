@@ -6,10 +6,4 @@ return {
   status_update_interval = 1000,
 
   scrollback_lines = 500000,
-
-  -- See: https://wezfurlong.org/wezterm/quickselect.html
-  quick_select_patterns = {
-    -- Make task, diff and paste numbers quick-selectable
-    "\\b([tTdDpP]\\d+)\\b",
-  },
 }

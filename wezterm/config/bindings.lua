@@ -1,52 +1,204 @@
 local wezterm = require('wezterm')
--- local platform = require('utils.platform')
+local act = wezterm.action
+local platform = require('utils.platform')
 
--- local mod = {}
+local mod = {}
 
--- if platform.is_mac then
---   mod.SUPER = 'SUPER'
---   mod.SUPER_REV = 'SUPER|CTRL'
--- elseif platform.is_win or platform.is_linux then
---   mod.SUPER = 'ALT' -- to not conflict with Windows key shortcuts
---   mod.SUPER_REV = 'ALT|CTRL'
--- end
+if platform.is_mac then
+  mod.SUPER = 'SUPER'
+  mod.SUPER_REV = 'SUPER|CTRL'
+elseif platform.is_win or platform.is_linux then
+  mod.SUPER = 'ALT' -- to not conflict with Windows key shortcuts
+  mod.SUPER_REV = 'ALT|CTRL'
+end
 
 
 local keys = {
-  { key = 'a', mods = "LEADER|CTRL",  action=wezterm.action{SendString="\x02"}},
-  { key = '%', mods = "LEADER",       action=wezterm.action{SplitVertical={domain="CurrentPaneDomain"}}},
-  { key = '"',mods = "LEADER",       action=wezterm.action{SplitHorizontal={domain="CurrentPaneDomain"}}},
-  { key = 'o', mods = "LEADER",       action="TogglePaneZoomState" },
-  { key = 'z', mods = "LEADER",       action="TogglePaneZoomState" },
-  { key = 'c', mods = "LEADER",       action=wezterm.action{SpawnTab="CurrentPaneDomain"}},
-  { key = 'h', mods = "LEADER",       action=wezterm.action{ActivatePaneDirection="Left"}},
-  { key = 'j', mods = "LEADER",       action=wezterm.action{ActivatePaneDirection="Down"}},
-  { key = 'k', mods = "LEADER",       action=wezterm.action{ActivatePaneDirection="Up"}},
-  { key = 'l', mods = "LEADER",       action=wezterm.action{ActivatePaneDirection="Right"}},
-  { key = 'H', mods = "LEADER|SHIFT", action=wezterm.action{AdjustPaneSize={"Left", 5}}},
-  { key = 'J', mods = "LEADER|SHIFT", action=wezterm.action{AdjustPaneSize={"Down", 5}}},
-  { key = 'K', mods = "LEADER|SHIFT", action=wezterm.action{AdjustPaneSize={"Up", 5}}},
-  { key = 'L', mods = "LEADER|SHIFT", action=wezterm.action{AdjustPaneSize={"Right", 5}}},
-  { key = '1', mods = "LEADER",       action=wezterm.action{ActivateTab=0}},
-  { key = '2', mods = "LEADER",       action=wezterm.action{ActivateTab=1}},
-  { key = '3', mods = "LEADER",       action=wezterm.action{ActivateTab=2}},
-  { key = '4', mods = "LEADER",       action=wezterm.action{ActivateTab=3}},
-  { key = '5', mods = "LEADER",       action=wezterm.action{ActivateTab=4}},
-  { key = '6', mods = "LEADER",       action=wezterm.action{ActivateTab=5}},
-  { key = '7', mods = "LEADER",       action=wezterm.action{ActivateTab=6}},
-  { key = '8', mods = "LEADER",       action=wezterm.action{ActivateTab=7}},
-  { key = '9', mods = "LEADER",       action=wezterm.action{ActivateTab=8}},
-  { key = '&', mods = "LEADER|SHIFT", action=wezterm.action{CloseCurrentTab={confirm=true}}},
-  { key = 'x', mods = "LEADER",       action=wezterm.action{CloseCurrentPane={confirm=true}}},
+  -- misc/useful --
+  { key = 'F1', mods = 'NONE', action = 'ActivateCopyMode' },
+  { key = 'F2', mods = 'NONE', action = act.ActivateCommandPalette },
+  { key = 'F3', mods = 'NONE', action = act.ShowLauncher },
+  { key = 'F4', mods = 'NONE', action = act.ShowLauncherArgs({ flags = 'FUZZY|TABS' }) },
+  {
+    key = 'F5',
+    mods = 'NONE',
+    action = act.ShowLauncherArgs({ flags = 'FUZZY|WORKSPACES' }),
+  },
+  { key = 'F11', mods = 'NONE',    action = act.ToggleFullScreen },
+  { key = 'F12', mods = 'NONE',    action = act.ShowDebugOverlay },
+  { key = 'f',   mods = mod.SUPER, action = act.Search({ CaseInSensitiveString = '' }) },
+  {
+    key = 'u',
+    mods = mod.SUPER_REV,
+    action = wezterm.action.QuickSelectArgs({
+      label = 'open url',
+      patterns = {
+        '\\((https?://\\S+)\\)',
+        '\\[(https?://\\S+)\\]',
+        '\\{(https?://\\S+)\\}',
+        '<(https?://\\S+)>',
+        '\\bhttps?://\\S+[)/a-zA-Z0-9-]+',
+        "\\b([tTdDpP]\\d+)\\b",
+      },
+      action = wezterm.action_callback(function(window, pane)
+        local url = window:get_selection_text_for_pane(pane)
+        if string.find(url, "http") then
+          url = url
+        else
+          url = "https://fburl.com/b/" .. url
+        end
+
+        wezterm.log_info('opening: ' .. url)
+        wezterm.open_with(url)
+      end),
+    }),
+  },
+
+  -- copy/paste --
+  { key = 'c',          mods = mod.SUPER,  action = act.CopyTo('Clipboard') },
+  { key = 'v',          mods = mod.SUPER,  action = act.PasteFrom('Clipboard') },
+
+  -- tabs --
+  -- tabs: spawn+close
+  { key = 't',          mods = mod.SUPER,     action = act.SpawnTab('DefaultDomain') },
+  { key = 'w',          mods = mod.SUPER_REV, action = act.CloseCurrentTab({ confirm = false }) },
+
+  -- tabs: navigation
+  { key = '[',          mods = mod.SUPER,     action = act.ActivateTabRelative(-1) },
+  { key = ']',          mods = mod.SUPER,     action = act.ActivateTabRelative(1) },
+  { key = '[',          mods = mod.SUPER_REV, action = act.MoveTabRelative(-1) },
+  { key = ']',          mods = mod.SUPER_REV, action = act.MoveTabRelative(1) },
+
+  -- tab: title
+  { key = '0',          mods = mod.SUPER,     action = act.EmitEvent('tabs.manual-update-tab-title') },
+  { key = '0',          mods = mod.SUPER_REV, action = act.EmitEvent('tabs.reset-tab-title') },
+
+  -- tab: hide tab-bar
+  { key = '9',          mods = mod.SUPER,     action = act.EmitEvent('tabs.toggle-tab-bar'), },
+
+  -- window --
+  -- window: spawn windows
+  { key = 'n',          mods = mod.SUPER,     action = act.SpawnWindow },
+
+  -- window: zoom window
+  {
+    key = '-',
+    mods = mod.SUPER,
+    action = wezterm.action_callback(function(window, _pane)
+      local dimensions = window:get_dimensions()
+      if dimensions.is_full_screen then
+        return
+      end
+      local new_width = dimensions.pixel_width - 50
+      local new_height = dimensions.pixel_height - 50
+      window:set_inner_size(new_width, new_height)
+    end)
+  },
+  {
+    key = '=',
+    mods = mod.SUPER,
+    action = wezterm.action_callback(function(window, _pane)
+      local dimensions = window:get_dimensions()
+      if dimensions.is_full_screen then
+        return
+      end
+      local new_width = dimensions.pixel_width + 50
+      local new_height = dimensions.pixel_height + 50
+      window:set_inner_size(new_width, new_height)
+    end)
+  },
+
+  -- panes --
+  -- panes: split panes
+  {
+    key = [[\]],
+    mods = mod.SUPER,
+    action = act.SplitVertical({ domain = 'CurrentPaneDomain' }),
+  },
+  {
+    key = [[\]],
+    mods = mod.SUPER_REV,
+    action = act.SplitHorizontal({ domain = 'CurrentPaneDomain' }),
+  },
+
+  -- panes: zoom+close pane
+  { key = 'Enter', mods = mod.SUPER,     action = act.TogglePaneZoomState },
+  { key = 'w',     mods = mod.SUPER,     action = act.CloseCurrentPane({ confirm = false }) },
+
+  -- panes: navigation
+  { key = 'k',     mods = mod.SUPER_REV, action = act.ActivatePaneDirection('Up') },
+  { key = 'j',     mods = mod.SUPER_REV, action = act.ActivatePaneDirection('Down') },
+  { key = 'h',     mods = mod.SUPER_REV, action = act.ActivatePaneDirection('Left') },
+  { key = 'l',     mods = mod.SUPER_REV, action = act.ActivatePaneDirection('Right') },
+  {
+    key = 'p',
+    mods = mod.SUPER_REV,
+    action = act.PaneSelect({ alphabet = '1234567890', mode = 'SwapWithActiveKeepFocus' }),
+  },
+
+  -- panes: scroll pane
+  { key = 'u',        mods = mod.SUPER, action = act.ScrollByLine(-5) },
+  { key = 'd',        mods = mod.SUPER, action = act.ScrollByLine(5) },
+  { key = 'PageUp',   mods = 'NONE',    action = act.ScrollByPage(-0.75) },
+  { key = 'PageDown', mods = 'NONE',    action = act.ScrollByPage(0.75) },
+
+  -- key-tables --
+  -- resizes fonts
+  {
+    key = 'f',
+    mods = 'LEADER',
+    action = act.ActivateKeyTable({
+      name = 'resize_font',
+      one_shot = false,
+      timemout_miliseconds = 1000,
+    }),
+  },
+  -- resize panes
+  {
+    key = 'p',
+    mods = 'LEADER',
+    action = act.ActivateKeyTable({
+      name = 'resize_pane',
+      one_shot = false,
+      timemout_miliseconds = 1000,
+    }),
+  },
 }
 
-local key_tables = {}
-local mouse_binds = {}
+-- stylua: ignore
+local key_tables = {
+  resize_font = {
+    { key = 'k',      action = act.IncreaseFontSize },
+    { key = 'j',      action = act.DecreaseFontSize },
+    { key = 'r',      action = act.ResetFontSize },
+    { key = 'Escape', action = 'PopKeyTable' },
+    { key = 'q',      action = 'PopKeyTable' },
+  },
+  resize_pane = {
+    { key = 'k',      action = act.AdjustPaneSize({ 'Up', 1 }) },
+    { key = 'j',      action = act.AdjustPaneSize({ 'Down', 1 }) },
+    { key = 'h',      action = act.AdjustPaneSize({ 'Left', 1 }) },
+    { key = 'l',      action = act.AdjustPaneSize({ 'Right', 1 }) },
+    { key = 'Escape', action = 'PopKeyTable' },
+    { key = 'q',      action = 'PopKeyTable' },
+  },
+}
+
+local mouse_bindings = {
+  -- Ctrl-click will open the link under the mouse cursor
+  {
+    event = { Up = { streak = 1, button = 'Left' } },
+    mods = 'CTRL',
+    action = act.OpenLinkAtMouseCursor,
+  },
+}
 
 return {
-  -- disable_default_key_bindings = true,
+  disable_default_key_bindings = true,
   -- debug_key_events = true,
-  leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 2000 },
+  -- disable_default_mouse_bindings = true,
+  -- leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 2000 },
+  leader = { key = 'Space', mods = mod.SUPER_REV, timeout_milliseconds = 2000 },
   -- keys = {
   --   {
   --     key = '|',
@@ -62,6 +214,6 @@ return {
   -- }
   -- disable_default_mouse_bindings = true,
   keys = keys,
-  --  key_tables = key_tables,
-  --  mouse_bindings = mouse_bindings,
+  key_tables = key_tables,
+  mouse_bindings = mouse_bindings,
 }
