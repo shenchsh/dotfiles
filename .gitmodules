@@ -1,3 +1,6 @@
 [submodule "zsh/fzf"]
 	path = zsh/fzf
 	url = https://github.com/junegunn/fzf.git
+[submodule "zsh/.antidote"]
+	path = zsh/.antidote
+	url = https://github.com/mattmc3/antidote.git

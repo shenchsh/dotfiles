@@ -62,32 +62,8 @@ fi
 ################################
 # Plugins
 ################################
-source ${ZDOTDIR:-$HOME}/antigen.zsh
-
-antigen use oh-my-zsh
-
-# acs, or acs <keyword>
-antigen bundle aliases
-antigen bundle colored-man-pages
-antigen bundle command-not-found
-# .envrc, direnv allow . 
-antigen bundle direnv
-antigen bundle dnf
-# extract <filename>
-antigen bundle extract
-antigen bundle fasd
-antigen bundle git
-antigen bundle mercurial
-antigen bundle ripgrep
-antigen bundle systemd
-antigen bundle jeffreytse/zsh-vi-mode
-
-antigen bundle zsh-users/zsh-autosuggestions
-antigen bundle zsh-users/zsh-syntax-highlighting
-
-antigen theme romkatv/powerlevel10k
-
-antigen apply
+source ${ZDOTDIR:-$HOME}/.antidote/antidote.zsh
+antidote load
 
 [[ -s ${ZDOTDIR:-$HOME}/.p10k.zsh ]] && source ${ZDOTDIR:-$HOME}/.p10k.zsh
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet

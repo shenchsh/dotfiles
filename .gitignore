@@ -4,4 +4,5 @@ zsh/.zshrc.zwc
 zsh/.zcompdump
 zsh/.zsensitive
 zsh/.zsh_sessions
+zsh/.zsh_plugins.zsh
 wezterm/config/domains.lua

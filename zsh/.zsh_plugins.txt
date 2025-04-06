@@ -1,0 +1,15 @@
+jeffreytse/zsh-vi-mode
+
+# prompts:
+#   with prompt plugins, remember to add this to your .zshrc:
+romkatv/powerlevel10k
+
+# frameworks like oh-my-zsh are supported
+getantidote/use-omz        # MUST HAVE: handle OMZ dependencies
+ohmyzsh/ohmyzsh path:lib   # MUST HAVE: load OMZ's library
+
+ohmyzsh/ohmyzsh path:plugins/colored-man-pages
+ohmyzsh/ohmyzsh path:plugins/fasd
+
+zsh-users/zsh-autosuggestions
+zdharma-continuum/fast-syntax-highlighting kind:defer
