@@ -1,117 +1,115 @@
 local wezterm = require('wezterm')
-local umath = require('utils.math')
-local Cells = require('utils.cells')
-local OptsValidator = require('utils.opts-validator')
-
----@alias Event.RightStatusOptions { date_format?: string }
-
----Setup options for the right status bar
-local EVENT_OPTS = {}
-
----@type OptsSchema
-EVENT_OPTS.schema = {
-  {
-    name = 'date_format',
-    type = 'string',
-    default = '%a %H:%M:%S',
-  },
-}
-EVENT_OPTS.validator = OptsValidator:new(EVENT_OPTS.schema)
-
-local nf = wezterm.nerdfonts
-local attr = Cells.attr
 
 local M = {}
 
-local ICON_SEPARATOR = nf.oct_dash
-local ICON_DATE = nf.fa_calendar
+function get_last_two_sections(path)
+  local pattern = "([^/\\]+)[/\\]?([^/\\]*)$"
+  local section1, section2 = string.match(path, pattern)
 
----@type string[]
-local discharging_icons = {
-  nf.md_battery_10,
-  nf.md_battery_20,
-  nf.md_battery_30,
-  nf.md_battery_40,
-  nf.md_battery_50,
-  nf.md_battery_60,
-  nf.md_battery_70,
-  nf.md_battery_80,
-  nf.md_battery_90,
-  nf.md_battery,
-}
----@type string[]
-local charging_icons = {
-  nf.md_battery_charging_10,
-  nf.md_battery_charging_20,
-  nf.md_battery_charging_30,
-  nf.md_battery_charging_40,
-  nf.md_battery_charging_50,
-  nf.md_battery_charging_60,
-  nf.md_battery_charging_70,
-  nf.md_battery_charging_80,
-  nf.md_battery_charging_90,
-  nf.md_battery_charging,
-}
-
----@type table<string, Cells.SegmentColors>
--- stylua: ignore
-local colors = {
-  date      = { fg = '#fab387', bg = 'rgba(0, 0, 0, 0.4)' },
-  battery   = { fg = '#f9e2af', bg = 'rgba(0, 0, 0, 0.4)' },
-  separator = { fg = '#74c7ec', bg = 'rgba(0, 0, 0, 0.4)' }
-}
-
-local cells = Cells:new()
-
-cells
-  :add_segment('date_icon', ICON_DATE .. '  ', colors.date, attr(attr.intensity('Bold')))
-  :add_segment('date_text', '', colors.date, attr(attr.intensity('Bold')))
-  :add_segment('separator', ' ' .. ICON_SEPARATOR .. '  ', colors.separator)
-  :add_segment('battery_icon', '', colors.battery)
-  :add_segment('battery_text', '', colors.battery, attr(attr.intensity('Bold')))
-
----@return string, string
-local function battery_info()
-  -- ref: https://wezfurlong.org/wezterm/config/lua/wezterm/battery_info.html
-
-  local charge = ''
-  local icon = ''
-
-  for _, b in ipairs(wezterm.battery_info()) do
-    local idx = umath.clamp(umath.round(b.state_of_charge * 10), 1, 10)
-    charge = string.format('%.0f%%', b.state_of_charge * 100)
-
-    if b.state == 'Charging' then
-      icon = charging_icons[idx]
-    else
-      icon = discharging_icons[idx]
-    end
+  if section1 and section2 ~= "" then
+    return section1 .. "/" .. section2
+  else
+    return section1 or path
   end
-
-  return charge, icon .. ' '
 end
 
 ---@param opts? Event.RightStatusOptions Default: {date_format = '%a %H:%M:%S'}
 M.setup = function(opts)
-  local valid_opts, err = EVENT_OPTS.validator:validate(opts or {})
+  wezterm.on('update-right-status', function(window, pane)
+    -- Each element holds the text for a cell in a "powerline" style << fade
+    local cells = {}
 
-  if err then
-    wezterm.log_error(err)
-  end
+    -- Figure out the cwd and host of the current pane.
+    -- This will pick up the hostname for the remote host if your
+    -- shell is using OSC 7 on the remote host.
+    local cwd_uri = pane:get_current_working_dir()
+    if cwd_uri then
+      local cwd = ''
+      local hostname = ''
 
-  wezterm.on('update-right-status', function(window, _pane)
-    local battery_text, battery_icon = battery_info()
+      if type(cwd_uri) == 'userdata' then
+        -- Running on a newer version of wezterm and we have
+        -- a URL object here, making this simple!
 
-    cells
-      :update_segment_text('date_text', wezterm.strftime(valid_opts.date_format))
-      :update_segment_text('battery_icon', battery_icon)
-      :update_segment_text('battery_text', battery_text)
+        cwd = cwd_uri.file_path
+        hostname = cwd_uri.host or wezterm.hostname()
+      else
+        -- an older version of wezterm, 20230712-072601-f4abf8fd or earlier,
+        -- which doesn't have the Url object
+        cwd_uri = cwd_uri:sub(8)
+        local slash = cwd_uri:find '/'
+        if slash then
+          hostname = cwd_uri:sub(1, slash - 1)
+          -- and extract the cwd from the uri, decoding %-encoding
+          cwd = cwd_uri:sub(slash):gsub('%%(%x%x)', function(hex)
+            return string.char(tonumber(hex, 16))
+          end)
+        end
+      end
 
-    window:set_right_status(
-      wezterm.format(
-        cells:render({ 'date_icon', 'date_text', 'separator', 'battery_icon', 'battery_text' })
-      )
-    )
+      -- Remove the domain name portion of the hostname
+      local dot = hostname:find '[.]'
+      if dot then
+        hostname = hostname:sub(1, dot - 1)
+      end
+      if hostname == '' then
+        hostname = wezterm.hostname()
+      end
+
+      table.insert(cells, get_last_two_sections(cwd))
+      table.insert(cells, hostname)
+    end
+
+    -- I like my date/time in this style: "Wed Mar 3 08:14"
+    local date = wezterm.strftime '%a %b %-d %H:%M'
+    table.insert(cells, date)
+
+    -- An entry for each battery (typically 0 or 1 battery)
+    for _, b in ipairs(wezterm.battery_info()) do
+      table.insert(cells, string.format('%.0f%%', b.state_of_charge * 100))
+    end
+
+    -- The powerline < symbol
+    local LEFT_ARROW = utf8.char(0xe0b3)
+    -- The filled in variant of the < symbol
+    local SOLID_LEFT_ARROW = utf8.char(0xe0b2)
+
+    -- Color palette for the backgrounds of each cell
+    local colors = {
+      '#3c1361',
+      '#52307c',
+      '#663a82',
+      '#7c5295',
+      '#b491c8',
+    }
+
+    -- Foreground color for the text across the fade
+    local text_fg = '#c0c0c0'
+
+    -- The elements to be formatted
+    local elements = {}
+    -- How many cells have been formatted
+    local num_cells = 0
+
+    -- Translate a cell into elements
+    function push(text, is_last)
+      local cell_no = num_cells + 1
+      table.insert(elements, { Foreground = { Color = text_fg } })
+      table.insert(elements, { Background = { Color = colors[cell_no] } })
+      table.insert(elements, { Text = ' ' .. text .. ' ' })
+      if not is_last then
+        table.insert(elements, { Foreground = { Color = colors[cell_no + 1] } })
+        table.insert(elements, { Text = SOLID_LEFT_ARROW })
+      end
+      num_cells = num_cells + 1
+    end
+
+    while #cells > 0 do
+      local cell = table.remove(cells, 1)
+      push(cell, #cells == 0)
+    end
+
+    window:set_right_status(wezterm.format(elements))
   end)
 end
 

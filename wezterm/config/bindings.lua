@@ -198,21 +198,7 @@ return {
   disable_default_key_bindings = true,
   -- debug_key_events = true,
   -- disable_default_mouse_bindings = true,
-  -- leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 2000 },
   leader = { key = 'Space', mods = mod.SUPER_REV, timeout_milliseconds = 2000 },
-  -- keys = {
-  --   {
-  --     key = '|',
-  --     mods = 'LEADER|SHIFT',
-  --     action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
-  --   },
-  --   -- Send "CTRL-A" to the terminal when pressing CTRL-A, CTRL-A
-  --   {
-  --     key = 'a',
-  --     mods = 'LEADER|CTRL',
-  --     action = wezterm.action.SendKey { key = 'a', mods = 'CTRL' },
-  --   },
-  -- }
   -- disable_default_mouse_bindings = true,
   keys = keys,
   key_tables = key_tables,
