@@ -2,7 +2,7 @@
 
 top_level_dotfiles=(
     ".zshenv"
-    ".tmux.conf"
+#    ".tmux.conf"
 )
 
 for f in ${top_level_dotfiles[*]}; do
@@ -10,4 +10,4 @@ for f in ${top_level_dotfiles[*]}; do
 done
 
 cp -s -r ~/dotfiles/nvim ~/.config/
-cp -s -r ~/dotfiles/wezterm ~/.config/
+# cp -s -r ~/dotfiles/wezterm ~/.config/
