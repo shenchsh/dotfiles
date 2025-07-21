@@ -54,6 +54,8 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     /opt/homebrew/bin
     $path
   )
+
+  test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 else
   echo "Unsupported operating system"
   exit 1
