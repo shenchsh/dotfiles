@@ -11,3 +11,6 @@ done
 
 cp -s -r ~/dotfiles/nvim ~/.config/
 # cp -s -r ~/dotfiles/wezterm ~/.config/
+
+
+# git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-$HOME}/.antidote
