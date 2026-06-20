@@ -6,3 +6,4 @@ zsh/.zsensitive
 zsh/.zsh_sessions
 zsh/.zsh_plugins.zsh
 wezterm/config/domains.lua
+.DS_Store
