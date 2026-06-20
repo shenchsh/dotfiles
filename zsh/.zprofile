@@ -24,6 +24,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     $HOME/homebrew/opt/gnu-sed/libexec/gnubin
     $HOME/homebrew/opt/qemu/bin
     /opt/homebrew/bin
+    $HOME/.local/bin
     $path
   )
 else
