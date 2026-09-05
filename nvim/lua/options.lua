@@ -55,3 +55,6 @@ o.inccommand = "nosplit" -- show effects of substitute incrementally
 
 o.updatetime = 400 -- decrease time for cursorhold event
 o.timeoutlen = 500
+
+-- ocp-indent
+vim.opt.rtp:prepend(vim.fn.expand('$HOME/.opam/default/share/ocp-indent/vim'))

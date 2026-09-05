@@ -20,9 +20,7 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+[[ ! -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]] || source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 
 autoload -Uz compinit
 compinit -d "${ZSH_CACHE_DIR}/zcompdump-$ZSH_VERSION"
@@ -37,7 +35,7 @@ path=(
   $path
 )
 
-[[ -s $HOME/.cargo/env ]] && source $HOME/.cargo/env
+[[ ! -r "$HOME/.cargo/env" ]] || source "$HOME/.cargo/env"
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   path=(
@@ -55,7 +53,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     $path
   )
 
-  test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+  [[ ! -r "$HOME/.iterm2_shell_integration.zsh" ]] || source "$HOME/.iterm2_shell_integration.zsh"
 else
   echo "Unsupported operating system"
   exit 1
@@ -67,15 +65,15 @@ fi
 source ${ZDOTDIR:-$HOME}/.antidote/antidote.zsh
 antidote load
 
-[[ -s ${ZDOTDIR:-$HOME}/.p10k.zsh ]] && source ${ZDOTDIR:-$HOME}/.p10k.zsh
+[[ ! -r "${ZDOTDIR:-$HOME}/.p10k.zsh" ]] || source "${ZDOTDIR:-$HOME}/.p10k.zsh"
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
 export FZF_BASE=$HOME/dotfiles/zsh/.fzf
-[[ -s ${FZF_BASE}/completion.zsh ]] && source ${FZF_BASE}/completion.zsh
+[[ ! -r "$FZF_BASE/completion.zsh" ]] || source "$FZF_BASE/completion.zsh"
 
 # Prevent overwriting fzf key-bindings
 function init_fzf_key_bindings() {
-  [[ -s ${FZF_BASE}/key-bindings.zsh ]] && source ${FZF_BASE}/key-bindings.zsh
+  [[ ! -r "$FZF_BASE/key-bindings.zsh" ]] || source "$FZF_BASE/key-bindings.zsh"
 }
 zvm_after_init_commands+=(init_fzf_key_bindings)
 
@@ -105,7 +103,23 @@ function mkcd() {
 alias s=ssh
 alias vim=nvim
 
-[[ -s $HOME/dotfiles/zsh/.zsensitive ]] && source $HOME/dotfiles/zsh/.zsensitive
+[[ ! -r "$HOME/dotfiles/zsh/.zsensitive" ]] || source "$HOME/dotfiles/zsh/.zsensitive"
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[[ ! -r "$NVM_DIR/nvm.sh" ]] || source "$NVM_DIR/nvm.sh"  # This loads nvm
+
+# OpenClaw Completion
+[[ ! -r "$HOME/.openclaw/completions/openclaw.zsh" ]] || source "$HOME/.openclaw/completions/openclaw.zsh"
+
+
+# BEGIN opam configuration
+# This is useful if you're using opam as it adds:
+#   - the correct directories to the PATH
+#   - auto-completion for the opam binary
+# This section can be safely removed at any time if needed.
+[[ ! -r "$HOME/.opam/opam-init/init.zsh" ]] || source "$HOME/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null
+# END opam configuration
+
+# Added by OrbStack: command-line tools and integration
+# This won't be added again if you remove it.
+[[ ! -r "$HOME/.orbstack/shell/init.zsh" ]] || source "$HOME/.orbstack/shell/init.zsh" 2>/dev/null || :

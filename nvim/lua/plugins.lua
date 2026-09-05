@@ -136,6 +136,12 @@ local plugins = {
   }
 }
 
-local opts = {}
+local opts = {
+  performance = {
+    rtp = {
+      reset = false, -- preserve runtime paths configured in options.lua
+    },
+  },
+}
 
 require("lazy").setup(plugins, opts)
