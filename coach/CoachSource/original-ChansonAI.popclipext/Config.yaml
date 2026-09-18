@@ -1,0 +1,50 @@
+name: Chanson AI
+identifier: com.chanson.popclip.ai
+popclipVersion: 6159
+icon: symbol:sparkles
+description: Compact ChatGPT actions for asking/explaining, rewriting, summarizing, and English coaching.
+
+submenu:
+  - title: Ask ChatGPT
+    javaScript: |
+      const text = popclip.input.text.trim();
+      const prompt = "Respond appropriately to the selected text. If it is a question or instruction, answer or follow it directly. If it is a term, phrase, statement, or passage rather than a request, explain it clearly and precisely, defining unfamiliar terms and adding useful context. Be concise unless detail is needed.";
+      if (text.length > 7000) {
+        popclip.showFailure("Selection is too long for this ChatGPT action (max ~7000 characters here).");
+      } else {
+        popclip.openUrl("https://chatgpt.com/?q=" + encodeURIComponent(prompt + "\n\n" + text));
+      }
+
+  - title: Rewrite
+    javaScript: |
+      const text = popclip.input.text.trim();
+      const prompt = "Rewrite the following in clear, natural, concise English. Preserve the original meaning and technical precision. Return only the rewritten text.";
+      if (text.length > 7000) {
+        popclip.showFailure("Selection is too long for this ChatGPT action (max ~7000 characters here).");
+      } else {
+        popclip.openUrl("https://chatgpt.com/?q=" + encodeURIComponent(prompt + "\n\n" + text));
+      }
+
+  - title: Summarize
+    javaScript: |
+      const text = popclip.input.text.trim();
+      const prompt = "Summarize the following. Start with the main point, then capture the most important facts, decisions, caveats, and action items. Avoid filler.";
+      if (text.length > 7000) {
+        popclip.showFailure("Selection is too long for this ChatGPT action (max ~7000 characters here).");
+      } else {
+        popclip.openUrl("https://chatgpt.com/?q=" + encodeURIComponent(prompt + "\n\n" + text));
+      }
+
+  - title: Coach
+    javaScript: |
+      const text = popclip.input.text.trim();
+      if (!text) {
+        popclip.showFailure("No text selected.");
+      } else {
+        // Existing ChatGPT conversation URLs do not consume ?q= as composer input.
+        // Put the selection on the clipboard, open the dedicated chat, then paste
+        // after the browser has had time to focus the page/composer.
+        await popclip.copyText(text, { notify: false });
+        await popclip.openUrl("https://chatgpt.com/g/g-p-6a9c3dc4bd7c81919c2750bad99774b1/c/6aa0e90d-e444-83e8-a726-a25ccb1d653d");
+        await popclip.pressKeys(["wait 2200", "shift escape", "wait 150", "command v"], { target: "hid" });
+      }

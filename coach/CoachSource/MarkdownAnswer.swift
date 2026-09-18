@@ -3,12 +3,14 @@ import WebKit
 
 struct MarkdownAnswer: NSViewRepresentable {
     var markdown: String
+    var pronounce: (String) -> Void
     @Binding var selectedText: String
-    func makeCoordinator() -> Coordinator { Coordinator(selectedText: $selectedText) }
+    func makeCoordinator() -> Coordinator { Coordinator(selectedText: $selectedText, pronounce: pronounce) }
     func makeNSView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
         config.websiteDataStore = .nonPersistent()
         config.userContentController.add(context.coordinator, name: "selection")
+        config.userContentController.add(context.coordinator, name: "pronounce")
         let view = WKWebView(frame: .zero, configuration: config)
         view.setValue(false, forKey: "drawsBackground")
         view.navigationDelegate = context.coordinator
@@ -21,9 +23,13 @@ struct MarkdownAnswer: NSViewRepresentable {
     func updateNSView(_ view: WKWebView, context: Context) { context.coordinator.update(markdown) }
     final class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         var selectedText: Binding<String>
-        init(selectedText: Binding<String>) { self.selectedText = selectedText }
+        var pronounce: (String) -> Void
+        init(selectedText: Binding<String>, pronounce: @escaping (String) -> Void) { self.selectedText = selectedText; self.pronounce = pronounce }
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-            if let text = message.body as? String { selectedText.wrappedValue = String(text.prefix(50000)) }
+            if let text = message.body as? String {
+                if message.name == "pronounce", ["US", "UK"].contains(text) { pronounce(text) }
+                else if message.name == "selection" { selectedText.wrappedValue = String(text.prefix(50000)) }
+            }
         }
         weak var view: WKWebView?
         var ready = false
