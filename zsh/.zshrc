@@ -1,100 +1,89 @@
-# Login shell: echo $0 outputs '-'
+# Interactive Zsh configuration. ZDOTDIR and the cache directory are set in .zshenv.
 
-# /etc/zshenv
-# ${ZDOTDIR:-$HOME}/.zshenv
-#   Always sourced. Define $PATH, $EDITOR, $PAGER, $ZDOTDIR etc
-#
-# /etc/zprofile
-# ${ZDOTDIR:-$HOME}/.zprofile
-#
-# /etc/zshrc
-# ${ZDOTDIR:-$HOME}/.zshrc (for interactive shell)
-#
-# /etc/zlogin
-# ${ZDOTDIR:-$HOME}/.zlogin
-#
-# ${ZDOTDIR:-$HOME}/.zlogout
-# /etc/zlogout
-
-
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-[[ ! -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]] || source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# --- Completions ---
 
 autoload -Uz compinit
 compinit -d "${ZSH_CACHE_DIR}/zcompdump-$ZSH_VERSION"
 
-################################
-# Platform-dependent configs
-################################
+# --- PATH and platform integration ---
+
 path=(
-  $HOME/bin
-  $HOME/dotfiles/bin
-  $HOME/.cargo/bin
-  $path
+  "$HOME/bin"
+  "$HOME/dotfiles/bin"
+  "$HOME/.cargo/bin"
+  "${path[@]}"
 )
 
-[[ ! -r "$HOME/.cargo/env" ]] || source "$HOME/.cargo/env"
+if [[ -r "$HOME/.cargo/env" ]]; then
+  source "$HOME/.cargo/env"
+fi
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   path=(
-    $HOME/dotfiles/bin/linux
-    $path
+    "$HOME/dotfiles/bin/linux"
+    "${path[@]}"
   )
 elif [[ "$OSTYPE" == "darwin"* ]]; then
   path=(
-    $HOME/dotfiles/bin/macos
-    $HOME/homebrew/bin
-    $HOME/homebrew/opt/riscv-gnu-toolchain/bin
-    $HOME/homebrew/opt/gnu-sed/libexec/gnubin
-    $HOME/homebrew/opt/qemu/bin
+    "$HOME/dotfiles/bin/macos"
+    "$HOME/homebrew/bin"
+    "$HOME/homebrew/opt/riscv-gnu-toolchain/bin"
+    "$HOME/homebrew/opt/gnu-sed/libexec/gnubin"
+    "$HOME/homebrew/opt/qemu/bin"
     /opt/homebrew/bin
-    $path
+    "${path[@]}"
   )
 
-  [[ ! -r "$HOME/.iterm2_shell_integration.zsh" ]] || source "$HOME/.iterm2_shell_integration.zsh"
+  if [[ -r "$HOME/.iterm2_shell_integration.zsh" ]]; then
+    source "$HOME/.iterm2_shell_integration.zsh"
+  fi
 else
   echo "Unsupported operating system"
   exit 1
 fi
 
-################################
-# Plugins
-################################
-source ${ZDOTDIR:-$HOME}/.antidote/antidote.zsh
+# --- Plugins (listed in .zsh_plugins.txt) ---
+
+source "${ZDOTDIR:-$HOME}/.antidote/antidote.zsh"
 antidote load
 
-[[ ! -r "${ZDOTDIR:-$HOME}/.p10k.zsh" ]] || source "${ZDOTDIR:-$HOME}/.p10k.zsh"
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+# --- Fuzzy completion and key bindings ---
 
-export FZF_BASE=$HOME/dotfiles/zsh/.fzf
-[[ ! -r "$FZF_BASE/completion.zsh" ]] || source "$FZF_BASE/completion.zsh"
+export FZF_BASE="$HOME/dotfiles/zsh/.fzf"
+if [[ -r "$FZF_BASE/completion.zsh" ]]; then
+  source "$FZF_BASE/completion.zsh"
+fi
 
-# Prevent overwriting fzf key-bindings
+# Load fzf bindings after zsh-vi-mode so they aren't overwritten.
 function init_fzf_key_bindings() {
-  [[ ! -r "$FZF_BASE/key-bindings.zsh" ]] || source "$FZF_BASE/key-bindings.zsh"
+  if [[ -r "$FZF_BASE/key-bindings.zsh" ]]; then
+    source "$FZF_BASE/key-bindings.zsh"
+  fi
 }
 zvm_after_init_commands+=(init_fzf_key_bindings)
 
+# --- History ---
 
-################################
-# Customization
-################################
-HISTFILE=$HOME/.zsh_history
+HISTFILE="$HOME/.zsh_history"
 HISTSIZE=1000000
 SAVEHIST=500000
-setopt BANG_HIST                 # Treat the '!' character specially during expansion.
-setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.
-setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
-setopt SHARE_HISTORY             # Share history between all sessions.
-setopt HIST_EXPIRE_DUPS_FIRST    # Expire duplicate entries first when trimming history.
-setopt HIST_IGNORE_DUPS          # Don't record an entry that was just recorded again.
-setopt HIST_IGNORE_ALL_DUPS      # Delete old recorded entry if new entry is a duplicate.
-setopt HIST_FIND_NO_DUPS         # Do not display a line previously found.
-setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history file.
-setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
-setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
+
+# Expansion and persistence.
+setopt BANG_HIST                # Enable ! history expansion.
+setopt EXTENDED_HISTORY         # Save timestamps and command durations.
+setopt INC_APPEND_HISTORY       # Append commands as they are entered.
+setopt SHARE_HISTORY            # Share history across sessions.
+
+# Keep history compact and avoid repeated search results.
+setopt HIST_EXPIRE_DUPS_FIRST   # Remove duplicates first when trimming history.
+setopt HIST_IGNORE_DUPS         # Skip consecutive duplicates.
+setopt HIST_IGNORE_ALL_DUPS     # Remove older copies of repeated commands.
+setopt HIST_FIND_NO_DUPS        # Skip duplicates when searching history.
+setopt HIST_SAVE_NO_DUPS        # Omit older duplicates when saving history.
+setopt HIST_REDUCE_BLANKS       # Remove unnecessary whitespace.
+setopt HIST_VERIFY              # Let expanded history commands be edited first.
+
+# --- Helpers and aliases ---
 
 function mkcd() {
   mkdir -p "$1" && cd "$1"
@@ -103,23 +92,40 @@ function mkcd() {
 alias s=ssh
 alias vim=nvim
 
-[[ ! -r "$HOME/dotfiles/zsh/.zsensitive" ]] || source "$HOME/dotfiles/zsh/.zsensitive"
+# --- Private local settings ---
 
+if [[ -r "$HOME/dotfiles/zsh/.zsensitive" ]]; then
+  source "$HOME/dotfiles/zsh/.zsensitive"
+fi
+
+# --- Language tools and application integrations ---
+
+# Node.js version manager.
 export NVM_DIR="$HOME/.nvm"
-[[ ! -r "$NVM_DIR/nvm.sh" ]] || source "$NVM_DIR/nvm.sh"  # This loads nvm
+if [[ -r "$NVM_DIR/nvm.sh" ]]; then
+  source "$NVM_DIR/nvm.sh"
+fi
 
-# OpenClaw Completion
-[[ ! -r "$HOME/.openclaw/completions/openclaw.zsh" ]] || source "$HOME/.openclaw/completions/openclaw.zsh"
-
+# OpenClaw command completion.
+if [[ -r "$HOME/.openclaw/completions/openclaw.zsh" ]]; then
+  source "$HOME/.openclaw/completions/openclaw.zsh"
+fi
 
 # BEGIN opam configuration
-# This is useful if you're using opam as it adds:
-#   - the correct directories to the PATH
-#   - auto-completion for the opam binary
-# This section can be safely removed at any time if needed.
-[[ ! -r "$HOME/.opam/opam-init/init.zsh" ]] || source "$HOME/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null
+# OCaml environment and completion; suppress startup output.
+if [[ -r "$HOME/.opam/opam-init/init.zsh" ]]; then
+  source "$HOME/.opam/opam-init/init.zsh" >/dev/null 2>&1
+fi
 # END opam configuration
 
-# Added by OrbStack: command-line tools and integration
-# This won't be added again if you remove it.
-[[ ! -r "$HOME/.orbstack/shell/init.zsh" ]] || source "$HOME/.orbstack/shell/init.zsh" 2>/dev/null || :
+# OrbStack command-line tools; tolerate missing or failed initialization.
+if [[ -r "$HOME/.orbstack/shell/init.zsh" ]]; then
+  source "$HOME/.orbstack/shell/init.zsh" 2>/dev/null || :
+fi
+
+# --- Prompt ---
+
+# Initialize the prompt after PATH, plugins, and shell integrations are ready.
+if (( $+commands[starship] )); then
+  eval "$(starship init zsh)"
+fi
