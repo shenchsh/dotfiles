@@ -11,8 +11,7 @@ cp CoachSource/Info.plist "$app/Contents/Info.plist"
 cp CoachSource/Resources/* "$app/Contents/Resources/"
 codesign --force --sign - "$app"
 codesign --verify --deep --strict "$app"
-# Ship the matching source alongside the app so the package remains reproducible.
+# Remove source bundled by earlier packages; ship only the installable files.
 rm -rf "$build_dir/Coach-Mac-Setup/CoachSource"
-cp -R CoachSource "$build_dir/Coach-Mac-Setup/CoachSource"
 (cd "$build_dir" && COPYFILE_DISABLE=1 zip -qr Coach-Mac-Setup.zip Coach-Mac-Setup)
 mv "$build_dir/Coach-Mac-Setup.zip" Coach-Mac-Setup.zip

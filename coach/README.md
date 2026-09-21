@@ -4,7 +4,7 @@ The project directory is `~/dotfiles/coach`. Make source changes here; earlier c
 
 - `CoachSource/`: current Coach 1.4.2 source and resources.
 - `CoachSource/AGENTS.md`: development instructions and the English-learning input boundary.
-- `Coach-Mac-Setup.zip`: installable package for Apple silicon, macOS 13+, including matching source.
+- `Coach-Mac-Setup.zip`: installable package for Apple silicon, macOS 13+, excluding source code.
 - `config/settings.json`: legacy shared-settings reference; the current app does not load it.
 
 ## Build
