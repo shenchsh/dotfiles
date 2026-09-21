@@ -36,8 +36,30 @@ local plugins = {
   },
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = 'main',
+    lazy = false,
     build = ':TSUpdate',
-    config = function () 
+    config = function()
+      require('nvim-treesitter').install({
+        'python', 'rust', 'c', 'cpp', 'ocaml', 'ocaml_interface',
+        'lua', 'vim', 'vimdoc', 'toml', 'json', 'yaml',
+        'markdown', 'markdown_inline', 'bash', 'cmake', 'make',
+        'javascript', 'typescript', 'tsx', 'html', 'css',
+      })
+      vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('SyntaxHighlight', { clear = true }),
+        pattern = {
+          'python', 'rust', 'c', 'cpp', 'ocaml', 'ocamlinterface',
+          'lua', 'vim', 'help', 'toml', 'json', 'yaml',
+          'markdown', 'sh', 'bash', 'cmake', 'make',
+          'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'html', 'css',
+        },
+        callback = function(event)
+          local lang = vim.api.nvim_buf_get_name(event.buf):match('%.mli$') and 'ocaml_interface' or nil
+          -- Use built-in syntax until the parser finishes installing.
+          pcall(vim.treesitter.start, event.buf, lang)
+        end,
+      })
     end
  },
  {
@@ -52,7 +74,6 @@ local plugins = {
         options = {
           always_show_bufferline = true,
           buffer_close_icon = '',
-          diagnostics = 'nvim_lsp',
           separator_style = "slant",
           offsets = {
             {
@@ -79,7 +100,7 @@ local plugins = {
       require('lualine').setup {
         sections = {
           lualine_a = {'mode'},
-          lualine_b = {'branch', 'diff', 'diagnostics'},
+          lualine_b = {'branch', 'diff'},
           lualine_c = {'filename'},
           lualine_x = {'encoding', 'fileformat', 'filetype'},
           lualine_y = {'progress'},
@@ -103,7 +124,6 @@ local plugins = {
   },
   {
     'nvim-telescope/telescope.nvim',
-    tag = '0.1.4',
     dependencies =  {'nvim-lua/plenary.nvim'} ,
     config = function()
       local builtin = require('telescope.builtin')
@@ -133,10 +153,12 @@ local plugins = {
     'windwp/nvim-autopairs',
     event = "InsertEnter",
     opts = {} -- this is equalent to setup({}) function
-  }
+  },
+
 }
 
 local opts = {
+  lockfile = vim.g.dotfiles_nvim_dir .. '/lazy-lock.json',
   performance = {
     rtp = {
       reset = false, -- preserve runtime paths configured in options.lua

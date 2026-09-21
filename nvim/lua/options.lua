@@ -43,10 +43,7 @@ o.joinspaces = false -- join lines without two spaces
 
 o.cursorline = true
 
-term = os.getenv("TERM")
-if string.find(term, "tmux") or string.find(term, "iterm") then
-    o.termguicolors = true -- allow true colors
-end
+o.termguicolors = true
 
 o.inccommand = "nosplit" -- show effects of substitute incrementally
 
@@ -56,5 +53,12 @@ o.inccommand = "nosplit" -- show effects of substitute incrementally
 o.updatetime = 400 -- decrease time for cursorhold event
 o.timeoutlen = 500
 
--- ocp-indent
-vim.opt.rtp:prepend(vim.fn.expand('$HOME/.opam/default/share/ocp-indent/vim'))
+vim.api.nvim_create_autocmd('FileType', {
+  group = vim.api.nvim_create_augroup('LanguageIndent', { clear = true }),
+  pattern = { 'python', 'rust', 'c', 'cpp' },
+  callback = function()
+    vim.bo.shiftwidth = 4
+    vim.bo.softtabstop = 4
+    vim.bo.tabstop = 4
+  end,
+})
