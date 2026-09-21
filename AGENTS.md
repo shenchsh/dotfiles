@@ -11,8 +11,8 @@ The current setup expects the checkout at `$HOME/dotfiles`.
 - `agent/AGENTS.md`: personal instructions linked to `~/.codex/AGENTS.md`.
   Keep repository-specific guidance in this root file.
 - `bin/`: shared utilities and platform-specific binaries.
-- `third-party/`: bundled dependencies; Starship release archives support offline setup.
-- `iTerm2/`: macOS terminal preferences, profiles, and themes.
+- `third-party/`: bundled Starship binaries, iTerm2 color themes, and fonts.
+- `iTerm2/`: shared macOS terminal preferences and a reference profile export.
 - `remap/`: Linux keyboard remapping configuration and service.
 - `coach/`: macOS English-learning app, source, and setup package;
   follow `coach/CoachSource/AGENTS.md` when changing its source.
