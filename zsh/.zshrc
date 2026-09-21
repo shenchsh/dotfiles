@@ -127,5 +127,6 @@ fi
 
 # Initialize the prompt after PATH, plugins, and shell integrations are ready.
 if (( $+commands[starship] )); then
+  export STARSHIP_CONFIG="$HOME/dotfiles/zsh/starship.toml"
   eval "$(starship init zsh)"
 fi
