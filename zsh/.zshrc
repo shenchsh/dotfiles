@@ -12,10 +12,6 @@ if [[ -r "$HOME/.cargo/env" ]]; then
 fi
 source "$HOME/dotfiles/zsh/platform.zsh"
 
-if [[ "$DOTFILES_OS" == macos && -r "$HOME/.iterm2_shell_integration.zsh" ]]; then
-  source "$HOME/.iterm2_shell_integration.zsh"
-fi
-
 # --- Plugins (listed in .zsh_plugins.txt) ---
 
 if [[ -r "${ZDOTDIR:-$HOME}/.antidote/antidote.zsh" ]]; then
@@ -111,4 +107,18 @@ fi
 if (( $+commands[starship] )); then
   export STARSHIP_CONFIG="$HOME/dotfiles/zsh/starship.toml"
   eval "$(starship init zsh)"
+fi
+
+# Report the current directory after prompt setup so split panes can inherit it.
+if [[ "$DOTFILES_OS" == macos && "$TERM_PROGRAM" == iTerm.app ]]; then
+  for iterm_integration in \
+    "$HOME/.iterm2_shell_integration.zsh" \
+    /Applications/iTerm.app/Contents/Resources/iterm2_shell_integration.zsh \
+    "$HOME/Applications/iTerm.app/Contents/Resources/iterm2_shell_integration.zsh"; do
+    if [[ -r "$iterm_integration" ]]; then
+      source "$iterm_integration"
+      break
+    fi
+  done
+  unset iterm_integration
 fi

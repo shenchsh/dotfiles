@@ -13,6 +13,11 @@ New split panes inherit the current pane's working directory. New tabs and
 windows start in the home directory. This is configured in the default profile's
 advanced initial-directory settings, in both the shared preferences and reference
 export.
+Zsh reports its current directory through iTerm2 shell integration, loaded after
+prompt setup. It uses `~/.iterm2_shell_integration.zsh` when present, otherwise
+the script bundled in `/Applications/iTerm.app` or `~/Applications/iTerm.app`.
+After updating an existing shell, run `source "$HOME/dotfiles/zsh/.zshrc"` before
+splitting a pane. No separate shell-integration installation is required.
 
 The profile uses JetBrains Mono Nerd Font Mono at 14 pt. Setup installs its
 regular, bold, italic, and bold italic styles from `third-party/fonts/JetBrainsMono/`
