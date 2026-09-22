@@ -13,7 +13,6 @@ The current setup expects the checkout at `$HOME/dotfiles`.
 - `bin/`: shared utilities and platform-specific binaries.
 - `third-party/`: bundled Starship binaries, iTerm2 color themes, and fonts.
 - `iTerm2/`: shared macOS terminal preferences and a reference profile export.
-- `remap/`: Linux keyboard remapping configuration and service.
 - `coach/`: macOS English-learning app, source, and setup package;
   follow `coach/CoachSource/AGENTS.md` when changing its source.
 
