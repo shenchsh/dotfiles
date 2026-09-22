@@ -9,6 +9,11 @@ at startup. Restart iTerm2 when your sessions are ready. Linux skips this step.
 Setup disables automatic saving back to this directory so local changes cannot
 overwrite the tracked configuration.
 
+New split panes inherit the current pane's working directory. New tabs and
+windows start in the home directory. This is configured in the default profile's
+advanced initial-directory settings, in both the shared preferences and reference
+export.
+
 The profile uses JetBrains Mono Nerd Font Mono at 14 pt. Setup installs its
 regular, bold, italic, and bold italic styles from `third-party/fonts/JetBrainsMono/`
 into `~/Library/Fonts`, without downloading anything.

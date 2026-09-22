@@ -403,7 +403,10 @@
       "Red Component": 0.7021318674087524
   },
   "Show Mark Indicators" : false,
-  "Custom Directory" : "No",
+  "Custom Directory" : "Advanced",
+  "AWDS Pane Option" : "Recycle",
+  "AWDS Tab Option" : "No",
+  "AWDS Window Option" : "No",
   "Working Directory" : "\/Users\/chs",
   "ASCII Anti Aliased" : true,
   "Shortcut" : "",
