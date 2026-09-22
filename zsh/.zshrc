@@ -7,45 +7,21 @@ compinit -d "${ZSH_CACHE_DIR}/zcompdump-$ZSH_VERSION"
 
 # --- PATH and platform integration ---
 
-path=(
-  "$HOME/bin"
-  "$HOME/dotfiles/bin"
-  "$HOME/.cargo/bin"
-  "${path[@]}"
-)
-
 if [[ -r "$HOME/.cargo/env" ]]; then
   source "$HOME/.cargo/env"
 fi
+source "$HOME/dotfiles/zsh/platform.zsh"
 
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  path=(
-    "$HOME/dotfiles/bin/linux"
-    "${path[@]}"
-  )
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-  path=(
-    "$HOME/dotfiles/bin/macos"
-    "$HOME/homebrew/bin"
-    "$HOME/homebrew/opt/riscv-gnu-toolchain/bin"
-    "$HOME/homebrew/opt/gnu-sed/libexec/gnubin"
-    "$HOME/homebrew/opt/qemu/bin"
-    /opt/homebrew/bin
-    "${path[@]}"
-  )
-
-  if [[ -r "$HOME/.iterm2_shell_integration.zsh" ]]; then
-    source "$HOME/.iterm2_shell_integration.zsh"
-  fi
-else
-  echo "Unsupported operating system"
-  exit 1
+if [[ "$DOTFILES_OS" == macos && -r "$HOME/.iterm2_shell_integration.zsh" ]]; then
+  source "$HOME/.iterm2_shell_integration.zsh"
 fi
 
 # --- Plugins (listed in .zsh_plugins.txt) ---
 
-source "${ZDOTDIR:-$HOME}/.antidote/antidote.zsh"
-antidote load
+if [[ -r "${ZDOTDIR:-$HOME}/.antidote/antidote.zsh" ]]; then
+  source "${ZDOTDIR:-$HOME}/.antidote/antidote.zsh"
+  antidote load
+fi
 
 # --- Fuzzy completion and key bindings ---
 
@@ -119,11 +95,16 @@ fi
 # END opam configuration
 
 # OrbStack command-line tools; tolerate missing or failed initialization.
-if [[ -r "$HOME/.orbstack/shell/init.zsh" ]]; then
+if [[ "$DOTFILES_OS" == macos && -r "$HOME/.orbstack/shell/init.zsh" ]]; then
   source "$HOME/.orbstack/shell/init.zsh" 2>/dev/null || :
 fi
 
-# --- Prompt ---
+# --- Directory navigation and prompt ---
+
+# z jumps to a visited directory; zi selects one interactively with fzf.
+if (( $+commands[zoxide] )); then
+  eval "$(zoxide init zsh)"
+fi
 
 # Initialize the prompt after PATH, plugins, and shell integrations are ready.
 if (( $+commands[starship] )); then

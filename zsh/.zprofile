@@ -2,35 +2,8 @@
 # Paths
 #
 
-# Ensure path arrays do not contain duplicates.
-typeset -gU cdpath fpath mailpath path
-
-# Set the list of directories that Zsh searches for programs.
-path=(
-  /usr/local/{bin,sbin}
-  $path
-)
-
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  path=(
-    $HOME/dotfiles/bin/linux
-    $path
-  )
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-  path=(
-    $HOME/dotfiles/bin/macos
-    $HOME/homebrew/bin
-    $HOME/homebrew/opt/riscv-gnu-toolchain/bin
-    $HOME/homebrew/opt/gnu-sed/libexec/gnubin
-    $HOME/homebrew/opt/qemu/bin
-    /opt/homebrew/bin
-    $HOME/.local/bin
-    $path
-  )
-else
-  echo "Unsupported operating system"
-  exit 1
-fi
+# Share platform and PATH handling with interactive shells.
+source "$HOME/dotfiles/zsh/platform.zsh"
 
 #
 # Editors

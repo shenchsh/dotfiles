@@ -5,13 +5,12 @@ The current setup expects the checkout at `$HOME/dotfiles`.
 
 ## Project layout
 
-- `init.zsh`: links shell, Neovim, and global Codex configuration and installs Starship.
+- `init.zsh`: links shell, Neovim, and global Codex configuration and configures shared terminal settings.
 - `.zshenv` and `zsh/`: shell startup, environment, plugins, and prompt configuration.
 - `nvim/`: Neovim options, mappings, and plugins.
 - `agent/AGENTS.md`: personal instructions linked to `~/.codex/AGENTS.md`.
   Keep repository-specific guidance in this root file.
-- `bin/`: shared utilities and platform-specific binaries.
-- `third-party/`: bundled Starship binaries, iTerm2 color themes, and fonts.
+- `third-party/`: shared utilities and platform-specific binaries in `bin/`, iTerm2 color themes, and fonts.
 - `iTerm2/`: shared macOS terminal preferences and a reference profile export.
 - `coach/`: macOS English-learning app, source, and setup package;
   follow `coach/CoachSource/AGENTS.md` when changing its source.
