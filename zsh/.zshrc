@@ -2,8 +2,6 @@
 
 # --- Completions ---
 
-typeset -gU fpath
-fpath=("$HOME/dotfiles/zsh/completions" "${fpath[@]}")
 autoload -Uz compinit
 compinit -d "${ZSH_CACHE_DIR}/zcompdump-$ZSH_VERSION"
 
@@ -106,7 +104,7 @@ fi
 # z jumps to a visited directory; zi selects one interactively with fzf.
 # Initialize after compinit and plugins to register z's native completion.
 if (( $+commands[zoxide] )); then
-  eval "$(zoxide init zsh)"
+  source "$HOME/dotfiles/zsh/zoxide.zsh"
 fi
 
 # Initialize the prompt after PATH, plugins, and shell integrations are ready.

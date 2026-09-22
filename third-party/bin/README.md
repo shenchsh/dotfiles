@@ -30,7 +30,9 @@ verify their SHA-256 hashes against GitHub release metadata. Extract only the
 tool executable into each target directory and preserve executable permissions.
 Update its version here, upstream license, `ARCHIVE_SHA256SUMS` (source archive
 hashes), and `SHA256SUMS` (extracted binary hashes). Commit the binaries and
-metadata together so devices can update offline after pulling.
+metadata together so devices can update offline after pulling. When updating
+zoxide, also regenerate `zsh/zoxide.zsh` from
+`zoxide init zsh`.
 
 Verify the executables from this directory with `shasum -a 256 -c SHA256SUMS`
 (or `sha256sum -c SHA256SUMS` on Linux).

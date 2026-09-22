@@ -12,9 +12,8 @@ from `third-party/bin/<target>` for macOS and Linux on ARM64 and x86-64.
 No download or binary installation is needed. This directory takes precedence
 over `~/bin` and package-manager paths. Use `z` to jump to a visited directory
 or `zi` to select one with fzf.
-Zsh loads bundled zoxide command completions from `zsh/completions` and native
-`z` completion from `zoxide init zsh`. Type `z query ` followed by Tab to select
-a matching visited directory with fzf.
+Zsh loads native `z` completion from `zsh/zoxide.zsh`, sourced by `.zshrc`.
+Type `z query ` followed by Tab to select a matching visited directory with fzf.
 
 To apply updates, run `git pull` followed by `zsh init.zsh` from `~/dotfiles`.
 Open a new shell to load the updated configuration.
