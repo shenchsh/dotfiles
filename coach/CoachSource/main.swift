@@ -339,7 +339,11 @@ final class FloatingPanel: NSPanel { override var canBecomeKey: Bool { true }; o
         panel.title = "Coach"; panel.level = .floating; panel.isFloatingPanel = true; panel.hidesOnDeactivate = false; panel.isReleasedWhenClosed = false
         panel.collectionBehavior = [.moveToActiveSpace, .fullScreenAuxiliary]
         panel.contentView = NSHostingView(rootView: CoachView(coach: coach)); panel.center(); panel.setFrameAutosaveName("CoachWindow")
-        show()
+        // Login startup prepares Coach for selections without interrupting the user.
+        let launchEvent = NSAppleEventManager.shared().currentAppleEvent
+        let launchedAtLogin = launchEvent?.eventID == kAEOpenApplication
+            && launchEvent?.paramDescriptor(forKeyword: keyAEPropData)?.enumCodeValue == keyAELaunchedAsLogInItem
+        if !launchedAtLogin { show() }
     }
     func show() { panel?.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true) }
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool { show(); return true }

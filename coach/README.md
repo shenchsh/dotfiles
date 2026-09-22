@@ -19,4 +19,6 @@ The build signs and verifies the app, then updates `Coach-Mac-Setup.zip`. Tempor
 
 ## Active settings
 
+Enable **Launch at login** in Coach's settings to start it quietly after signing in. Login startup keeps the window hidden until you send selected text or open Coach manually.
+
 Coach stores editable instructions in the local `com.chanson.coach` preference `customInstructions`. The default prompt and fixed input-boundary instructions are in `CoachSource/main.swift`. API keys remain in Keychain. Change the current prompt in Coach's settings; changing only the source default does not overwrite a saved custom prompt.
